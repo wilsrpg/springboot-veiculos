@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wils.springboot_veiculos.dtos.DtoDeVeiculo;
+import com.wils.springboot_veiculos.servicos.ServicoDeFila;
 import com.wils.springboot_veiculos.servicos.ServicoDeVeiculo;
 
 import jakarta.validation.Valid;
@@ -27,6 +28,9 @@ public class ControladorDeVeiculo {
 
   @Autowired
   ServicoDeVeiculo servico;
+
+	@Autowired
+	private ServicoDeFila fila;
 
   @PostMapping("/veiculos")
   public ResponseEntity<Object> criarVeiculo(@RequestBody @Valid DtoDeVeiculo dtoDeVeiculo,
@@ -42,6 +46,7 @@ public class ControladorDeVeiculo {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erros);
     }
     DtoDeVeiculo veiculo = servico.criarVeiculo(dtoDeVeiculo);
+    fila.sendMessage("Novo veículo cadastrado: " + veiculo.nome());
     return ResponseEntity.status(HttpStatus.CREATED).body(veiculo);
   }
 
