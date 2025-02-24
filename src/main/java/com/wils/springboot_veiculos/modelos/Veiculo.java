@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -17,7 +18,14 @@ public class Veiculo {
   @NotBlank private String nome;
   @NotBlank private String marca;
   @NotBlank private String modelo;
-  @NotBlank private String cor;
+  @NotNull private Integer cor;
+  @Transient
+  private final String[] cCorDenatran = { "o índice deste array corresponde ao número da cor",
+    "Amarelo", "Azul",    "Bege",     "Branco",
+    "Cinza",   "Dourado", "Grená",    "Laranja",
+    "Marrom",  "Prata",   "Preto",    "Rosa",
+    "Roxo",    "Verde",   "Vermelho", "Fantasia"
+  };
   @NotNull private Integer ano;
   @NotBlank private String placa;
   @NotBlank private String renavam;
@@ -64,11 +72,14 @@ public class Veiculo {
     this.renavam = n;
   }
 
-  public String getCor() {
+  public Integer getCor() {
     return this.cor;
   }
-  public void setCor(String n) {
+  public void setCor(Integer n) {
     this.cor = n;
+  }
+  public String getCorComoString() {
+    return this.cCorDenatran[cor];
   }
 
   public Integer getAno() {

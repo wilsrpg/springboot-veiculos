@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 //import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Pattern;
-//import jakarta.validation.constraints.Size;
 
 public record DtoDeVeiculo(
     @NotBlank(message = "O campo 'nome' não pode estar vazio.")
@@ -18,8 +17,16 @@ public record DtoDeVeiculo(
     @NotBlank(message = "O campo 'modelo' não pode estar vazio.")
     String modelo,
 
-    @NotBlank(message = "O campo 'cor' não pode estar vazio.")
-    String cor,
+    @NotNull(message = "O campo 'cor' não pode estar vazio.")
+    @Min(value = 1, message = "O código da cor é um número entre 1 e 16: "
+      + "1-Amarelo, 2-Azul, 3-Bege, 4-Branco, 5-Cinza, 6-Dourado, 7-Grená, 8-Laranja, "
+      + "9-Marrom, 10-Prata, 11-Preto, 12-Rosa, 13-Roxo, 14-Verde, 15-Vermelho, 16-Fantasia."
+    )
+    @Max(value = 16, message = "O código da cor é um número entre 1 e 16: "
+      + "1-Amarelo, 2-Azul, 3-Bege, 4-Branco, 5-Cinza, 6-Dourado, 7-Grená, 8-Laranja, "
+      + "9-Marrom, 10-Prata, 11-Preto, 12-Rosa, 13-Roxo, 14-Verde, 15-Vermelho, 16-Fantasia."
+    )
+    Integer cor,
 
     @NotNull(message = "O campo 'ano' não pode estar vazio.")
     //@Pattern(regexp = "^(19|20)[0-9]{2}$", message = "O ano deve ser maior que 1900 e menor ou igual ao ano atual.")
