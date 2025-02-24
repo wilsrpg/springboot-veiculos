@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,18 +22,23 @@ import com.wils.springboot_veiculos.servicos.ServicoDeVeiculo;
 import jakarta.validation.Valid;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class ControladorDeVeiculo {
 
   @Autowired
   ServicoDeVeiculo servico;
 
   @PostMapping("/veiculos")
-  //public ResponseEntity<String> criarVeiculo(@RequestBody @Valid RequestDeVeiculo requestDeVeiculo) {
   public ResponseEntity<Object> criarVeiculo(@RequestBody @Valid DtoDeVeiculo dtoDeVeiculo,
       BindingResult bindingResult
   ) {
     if (bindingResult.hasErrors()) {
-      Object erros = bindingResult.getAllErrors().stream().map(e -> e.getDefaultMessage());
+      class Erros {
+        @SuppressWarnings("unused")
+        public Object[] arrayDeErros;
+        public Erros(Object[] e){arrayDeErros = e;};
+      };
+      Erros erros = new Erros(bindingResult.getAllErrors().stream().map(e -> e.getDefaultMessage()).toArray());
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erros);
     }
     DtoDeVeiculo veiculo = servico.criarVeiculo(dtoDeVeiculo);
