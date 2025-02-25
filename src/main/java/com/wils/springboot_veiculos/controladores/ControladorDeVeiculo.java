@@ -21,6 +21,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.wils.springboot_veiculos.dtos.DtoDeCriacaoDeVeiculo;
 import com.wils.springboot_veiculos.dtos.DtoDeVeiculo;
 import com.wils.springboot_veiculos.servicos.ServicoDeFila;
 import com.wils.springboot_veiculos.servicos.ServicoDeVeiculo;
@@ -38,7 +39,7 @@ public class ControladorDeVeiculo {
 	private ServicoDeFila fila;
 
   @PostMapping("/veiculos")
-  public ResponseEntity<Object> criarVeiculo(@RequestBody @Valid DtoDeVeiculo dtoDeVeiculo,
+  public ResponseEntity<Object> criarVeiculo(@RequestBody @Valid DtoDeCriacaoDeVeiculo dtoDeCriacaoDeVeiculo,
       BindingResult bindingResult
   ) {
     if (bindingResult.hasErrors()) {
@@ -50,8 +51,8 @@ public class ControladorDeVeiculo {
       Erros erros = new Erros(bindingResult.getAllErrors().stream().map(e -> e.getDefaultMessage()).toArray());
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erros);
     }
-    DtoDeVeiculo veiculo = servico.criarVeiculo(dtoDeVeiculo);
-    fila.sendMessage("Novo veículo cadastrado: " + veiculo.nome());
+    DtoDeVeiculo veiculo = servico.criarVeiculo(dtoDeCriacaoDeVeiculo);
+    fila.sendMessage("Novo veículo cadastrado: " + veiculo.id());
     return ResponseEntity.status(HttpStatus.CREATED).body(veiculo);
   }
 

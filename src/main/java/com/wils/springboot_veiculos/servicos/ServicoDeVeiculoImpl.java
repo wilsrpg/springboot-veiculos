@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wils.springboot_veiculos.dtos.DtoDeCriacaoDeVeiculo;
 import com.wils.springboot_veiculos.dtos.DtoDeVeiculo;
 import com.wils.springboot_veiculos.modelos.Veiculo;
 import com.wils.springboot_veiculos.repositorios.RepositorioDeVeiculo;
@@ -18,7 +19,7 @@ public class ServicoDeVeiculoImpl implements ServicoDeVeiculo {
   RepositorioDeVeiculo repositorio;
 
   @Override
-  public DtoDeVeiculo criarVeiculo(DtoDeVeiculo dto) {
+  public DtoDeVeiculo criarVeiculo(DtoDeCriacaoDeVeiculo dto) {
       Veiculo veiculo = repositorio.save(converterParaEntidade(dto));
       return converterParaDto(veiculo);
   }
@@ -62,11 +63,11 @@ public class ServicoDeVeiculoImpl implements ServicoDeVeiculo {
 
   //conversores
   private DtoDeVeiculo converterParaDto(Veiculo veiculo) {
-      return new DtoDeVeiculo(veiculo.getNome(), veiculo.getMarca(), veiculo.getModelo(),
+      return new DtoDeVeiculo(veiculo.getId(), veiculo.getNome(), veiculo.getMarca(), veiculo.getModelo(),
       veiculo.getCor(), veiculo.getAno(), veiculo.getPlaca(), veiculo.getRenavam());
   }
 
-  private Veiculo converterParaEntidade(DtoDeVeiculo dtoDeVeiculo) {
+  private Veiculo converterParaEntidade(DtoDeCriacaoDeVeiculo dtoDeVeiculo) {
       Veiculo veiculo = new Veiculo();
       BeanUtils.copyProperties(dtoDeVeiculo, veiculo);
       return veiculo;

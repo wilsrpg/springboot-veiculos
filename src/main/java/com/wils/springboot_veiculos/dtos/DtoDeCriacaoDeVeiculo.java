@@ -1,7 +1,5 @@
 package com.wils.springboot_veiculos.dtos;
 
-import java.util.UUID;
-
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -9,10 +7,7 @@ import jakarta.validation.constraints.NotNull;
 //import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Pattern;
 
-public record DtoDeVeiculo(
-    @NotBlank(message = "O campo 'id' não pode estar vazio.")
-    UUID id,
-
+public record DtoDeCriacaoDeVeiculo(
     @NotBlank(message = "O campo 'nome' não pode estar vazio.")
     String nome,
 
