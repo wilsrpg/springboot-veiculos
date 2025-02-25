@@ -1,4 +1,5 @@
 package com.wils.springboot_veiculos.controladores;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,6 +17,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.wils.springboot_veiculos.dtos.DtoDeVeiculo;
 import com.wils.springboot_veiculos.servicos.ServicoDeFila;
 import com.wils.springboot_veiculos.servicos.ServicoDeVeiculo;
@@ -56,29 +61,62 @@ public class ControladorDeVeiculo {
   }
 
   @GetMapping("/veiculo/{id}")
-  public ResponseEntity<DtoDeVeiculo> consultarVeiculoPorId(@PathVariable UUID id) {
+  public ResponseEntity<Object> consultarVeiculoPorId(@PathVariable UUID id) {
     Optional<DtoDeVeiculo> veiculo = servico.consultarVeiculoPorId(id);
-    if (veiculo.isEmpty())
-      return ResponseEntity.notFound().build();
+    if (veiculo == null)
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+        new Erro("Veículo não encontrado.").paraJson()
+      );
     else
       return ResponseEntity.status(HttpStatus.OK).body(veiculo.get());
   }
 
   @PutMapping("/veiculo/{id}")
-  public ResponseEntity<DtoDeVeiculo> alterarVeiculo(@PathVariable UUID id, @RequestBody DtoDeVeiculo dtoDeVeiculo) {
+  public ResponseEntity<Object> alterarVeiculo(@PathVariable UUID id, @RequestBody DtoDeVeiculo dtoDeVeiculo) {
     Optional<DtoDeVeiculo> veiculo = servico.alterarVeiculo(id, dtoDeVeiculo);
-    if (veiculo.isEmpty())
-      return ResponseEntity.notFound().build();
+    if (veiculo == null)
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+        new Erro("Veículo não encontrado.").paraJson()
+      );
     else
       return ResponseEntity.status(HttpStatus.OK).body(veiculo.get());
   }
 
   @DeleteMapping("/veiculo/{id}")
-  public ResponseEntity<String> deleteVeiculo(@PathVariable UUID id) {
+  public ResponseEntity<Object> deleteVeiculo(@PathVariable UUID id) {
     Boolean excluiu = servico.excluirVeiculo(id);
     if (!excluiu)
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Veículo não encontrado.");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+        new Erro("Veículo não encontrado.").paraJson()
+      );
     else
-      return ResponseEntity.status(HttpStatus.OK).body("Veículo deletado com sucesso.");
+      return ResponseEntity.status(HttpStatus.OK).body(true);
+  }
+}
+
+
+class Erro {
+  Object erroObj;
+
+  Erro(String error) {
+    String e = error;
+    this.erroObj = new Object(){@JsonSerialize String error = e;};
+  }
+
+  String paraJson() {
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      String jsonString = objectMapper.writeValueAsString(erroObj);
+      return jsonString;
+    } catch (JsonMappingException e) {
+      e.printStackTrace();
+      return "Erro ao serializar objeto.";
+    } catch (JsonGenerationException e) {
+      e.printStackTrace();
+      return "Erro ao serializar objeto.";
+    } catch (IOException e) {
+      e.printStackTrace();
+      return "Erro ao serializar objeto.";
+    }
   }
 }
