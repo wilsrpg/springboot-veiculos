@@ -1,11 +1,14 @@
 package com.wils.springboot_veiculos.dtos;
 
+import com.wils.springboot_veiculos.constraint.AnoAteHoje;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 //import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Pattern;
+//import jakarta.validation.constraints.Size;
 
 public record DtoDeCriacaoDeVeiculo(
     @NotBlank(message = "O campo 'nome' não pode estar vazio.")
@@ -31,9 +34,10 @@ public record DtoDeCriacaoDeVeiculo(
     @NotNull(message = "O campo 'ano' não pode estar vazio.")
     //@Pattern(regexp = "^(19|20)[0-9]{2}$", message = "O ano deve ser maior que 1900 e menor ou igual ao ano atual.")
     //@Size(min = 4, max = 4, message = "O ano deve ser maior que 1900 e menor ou igual ao ano atual.")
-    @Min(value = 1900, message = "O ano deve ser maior que 1900 e menor ou igual ao ano atual.")
-    @Max(value = 2025, message = "O ano deve ser maior que 1900 e menor ou igual ao ano atual.")
+    //@Min(value = 1900, message = "O ano deve ser maior que 1900 e menor ou igual ao ano atual.")
+    //@Max(value = 2025, message = "O ano deve ser maior que 1900 e menor ou igual ao ano atual.")
     //@PastOrPresent(message = "O ano deve ser maior que 1900 e menor ou igual ao ano atual.")
+    @AnoAteHoje(min = 1886)
     Integer ano,
 
     @NotBlank(message = "O campo 'placa' não pode estar vazio.")
