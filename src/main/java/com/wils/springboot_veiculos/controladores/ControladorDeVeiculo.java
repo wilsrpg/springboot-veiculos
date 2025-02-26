@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -38,6 +39,13 @@ public class ControladorDeVeiculo {
 	@Autowired
 	private ServicoDeFila fila;
 
+  @GetMapping("/")
+  public ResponseEntity<Object> raiz() {
+    return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(
+      new Erro("Rotas disponíveis: /veiculos, /veiculo/<id>").paraJson()
+    );
+  }
+
   @PostMapping("/veiculos")
   public ResponseEntity<Object> criarVeiculo(@RequestBody @Valid DtoDeCriacaoDeVeiculo dtoDeCriacaoDeVeiculo,
       BindingResult bindingResult
@@ -65,7 +73,7 @@ public class ControladorDeVeiculo {
   public ResponseEntity<Object> consultarVeiculoPorId(@PathVariable UUID id) {
     Optional<DtoDeVeiculo> veiculo = servico.consultarVeiculoPorId(id);
     if (veiculo == null)
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(
         new Erro("Veículo não encontrado.").paraJson()
       );
     else
@@ -76,7 +84,7 @@ public class ControladorDeVeiculo {
   public ResponseEntity<Object> alterarVeiculo(@PathVariable UUID id, @RequestBody DtoDeVeiculo dtoDeVeiculo) {
     Optional<DtoDeVeiculo> veiculo = servico.alterarVeiculo(id, dtoDeVeiculo);
     if (veiculo == null)
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(
         new Erro("Veículo não encontrado.").paraJson()
       );
     else
@@ -87,11 +95,11 @@ public class ControladorDeVeiculo {
   public ResponseEntity<Object> deleteVeiculo(@PathVariable UUID id) {
     Boolean excluiu = servico.excluirVeiculo(id);
     if (!excluiu)
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body(
         new Erro("Veículo não encontrado.").paraJson()
       );
     else
-      return ResponseEntity.status(HttpStatus.OK).body(true);
+      return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(true);
   }
 }
 
